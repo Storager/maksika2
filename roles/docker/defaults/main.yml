@@ -1,0 +1,4 @@
+---
+# defaults file for role.docker
+docker_compose_version: "1.18.4"
+

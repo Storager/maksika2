@@ -1,0 +1,3 @@
+---
+- name: restart dockers
+  shell: "docker restart $(docker ps -q)"

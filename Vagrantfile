@@ -56,14 +56,14 @@ Vagrant.configure("2") do |config|
   
     # Customize the amount of memory on the VM:
     vb.memory = "2048"
-    vb.customize ["storageattach", :id, 
-                "--storagectl", "IDE Controller", 
-                "--port", "0", "--device", "1", 
-                "--type", "dvddrive", 
-                "--medium", "emptydrive"]    
   end
 
-
+  config.vm.provision "ansible_local" do |ansible|
+    ansible.playbook = "site.yml"
+    # ansible.inventory_path = "hosts/development"
+    ansible.install_mode = "pip"
+    ansible.version = "2.8.0"
+  end
   #
   # View the documentation for the provider you are using for more
   # information on available options.

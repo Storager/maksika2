@@ -1,0 +1,3 @@
+kiosk_user: kiosk
+# kiosk_url: "http://www.omniva.ee"
+kiosk_url: "http://127.0.0.1"

@@ -1,0 +1,41 @@
+- name: create user
+  user:
+    user: "{{ kiosk_user }}"
+    comment: Kiosk User
+    shell: /bin/bash
+
+- name: create systemd path
+  file:
+    path: /etc/systemd/system/getty@tty1.service.d
+    state: directory
+    recurse: true
+
+- name: add packages
+  apt:
+    name: "{{ kiosk_packages }}"
+    update_cache: yes
+    install_recommends: false
+  vars:
+    kiosk_packages:
+    - xserver-xorg
+    - x11-xserver-utils
+    - xinit
+    - chromium-browser
+    - openbox  
+
+- name: set templates
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - src: override.conf.j2
+      dest: /etc/systemd/system/getty@tty1.service.d/override.conf
+    - src: autostart.j2
+      dest: /etc/xdg/openbox/autostart
+    
+- name: copy file
+  copy:
+    src: "bash_profile"
+    dest: "/home/{{ kiosk_user }}/.bash_profile"
+    owner: "{{ kiosk_user }}"
+
