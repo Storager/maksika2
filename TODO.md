@@ -1,37 +1,18 @@
-1. Create user
-2. Set tty
-
+1. SystemD script
 ```
- #sudo  vi /etc/systemd/system/getty@tty1.service.d/override.conf
+#sudo vim /etc/systemd/system/myapp.service
+[Unit]
+Description=Manage Java service
+
 [Service]
-ExecStart=
-ExecStart=-/sbin/agetty -a <username> --noclear %I $TERM
+WorkingDirectory=/opt/prod
+ExecStart=/bin/java -Xms128m -Xmx256m -jar myapp.jar
+User=jvmapps
+Type=simple
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
 ```
 
-3. install dependencies
-```
-sudo apt-get install --no-install-recommends xserver-xorg x11-xserver-utils xinit chromium-browser openbox -y
-```
-
-4. edit xorg autostart
-
-
-```
-# Disable any form of screen saver / screen blanking / power management
-xset s off
-xset s noblank
-xset -dpms
-# Allow quitting the X server with CTRL-ATL-Backspace
-setxkbmap -option terminate:ctrl_alt_bksp
-# Start Chromium in kiosk mode
-sed -i 's/"exited_cleanly":false/"exited_cleanly":true/' ~/.config/chromium/'Local State'
-sed -i 's/"exited_cleanly":false/"exited_cleanly":true/; s/"exit_type":"[^"]\+"/"exit_type":"Normal"/' ~/.config/chromium/Default/Preferences
-chromium-browser --disable-infobars --kiosk '<http://your-url-here>'
-```
-
-
-5. Bash profiles
-```
-#nano .bash_profile
-[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && startx
-```
